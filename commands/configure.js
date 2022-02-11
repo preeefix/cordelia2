@@ -14,6 +14,8 @@ module.exports = {
                 .addChannelOption( option => option.setName('matching_lobby_id').setDescription('Match - Lobby Channel ID' ))
                 .addChannelOption( option => option.setName('matching_team1_id').setDescription('Match - Team 1 Channel ID' ))
                 .addChannelOption( option => option.setName('matching_team2_id').setDescription('Match - Team 2 Channel ID' ))
+                .addRoleOption( option => option.setName('internal_role_id').setDescription('Roles - Internal User Role ID' ))
+                .addRoleOption( option => option.setName('external_role_id').setDescription('Roles - External User Role ID' ))
         )
 		.addSubcommand( subcommand =>
             subcommand
@@ -40,11 +42,15 @@ module.exports = {
             let lobby = interaction.options.getChannel('matching_lobby_id')
             let team1 = interaction.options.getChannel('matching_team1_id')
             let team2 = interaction.options.getChannel('matching_team2_id')
+            let internalRole = interaction.options.getRole('internal_role_id')
+            let externalRole = interaction.options.getRole('external_role_id')
 
             // Filter out null responses
             let lobbyId = (lobby ? lobby.id : undefined);
             let team1Id = (team1 ? team1.id : undefined);
             let team2Id = (team2 ? team2.id : undefined);
+            let internalRoleId = (internalRole ? internalRole.id : undefined);
+            let externalRoleId = (externalRole ? externalRole.id : undefined);
 
             // Commit updated to the database
             let updatedGuild = await Guild.upsert({
@@ -52,6 +58,8 @@ module.exports = {
                 matching_lobby_id: lobbyId,
                 matching_team1_id: team1Id,
                 matching_team2_id: team2Id,
+                internal_role_id: internalRoleId,
+                external_role_id: externalRoleId,
             }, { returning: true });
 
 
@@ -59,15 +67,16 @@ module.exports = {
             const guildConfig = await Guild.findOne({ where: { guild_id: `${interaction.guildId}` }});
 
             const configEmbed = new MessageEmbed()
-                .setTitle("Current Guild Configuration")
-                .setAuthor(`Guild ID: ${guildConfig.guild_id}`)
+                .setTitle("Guild Configuration")
                 .addFields(
                     { name: 'Lobby Channel', value: `<#${guildConfig.matching_lobby_id}>`, inline: true },
                     { name: 'Team 1 Channel', value: `<#${guildConfig.matching_team1_id}>`, inline: true },
                     { name: 'Team 2 Channel', value: `<#${guildConfig.matching_team2_id}>`, inline: true },
+                    { name: 'Internal Role', value: `<&${guildConfig.internal_role_id}>`, inline: true },
+                    { name: 'External Role', value: `<&${guildConfig.external_role_id}>`, inline: true },
                 )
 
-            await interaction.followUp({ embeds: [configEmbed] });
+            await interaction.followUp({ embeds: [configEmbed], ephemeral: true });
             return;
         }
 

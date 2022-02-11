@@ -15,7 +15,15 @@ module.exports = (sequelize, DataTypes) => {
 		matching_team2_id: {
 			type: DataTypes.STRING,
 			allowNull: true,
-		}
+		},
+		external_role_id: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		internal_role_id: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
 	}, {
 		timestamps: true,
 	});
