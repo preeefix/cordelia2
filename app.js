@@ -10,9 +10,9 @@ const { discord, db } = require('./config.json');
 const discordClient = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 // Events Initialization
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync(__dirname+'/events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
-	const event = require(`./events/${file}`);
+	const event = require(__dirname+`/events/${file}`);
 	if (event.once) {
 		discordClient.once(event.name, (...args) => event.execute(...args));
 	} else {
@@ -23,10 +23,10 @@ for (const file of eventFiles) {
 
 // Command Initialization
 discordClient.commands = new Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(__dirname+'/commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const command = require(__dirname+`/commands/${file}`);
     discordClient.commands.set(command.data.name, command);
 }
 

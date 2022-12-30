@@ -64,9 +64,6 @@ module.exports = {
                 })
             }
 
-
-            console.log(mentionedUser);
-
             // Don't allow assigning the external role to internal users
             if (mentionedUser.roles.cache.has(guildConfig.internal_role_id)) {
                 return await interaction.reply({

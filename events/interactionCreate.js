@@ -16,7 +16,7 @@ module.exports = {
                 await interaction.editReply({ content: 'There was a transient error while executing the command', ephemeral: true })
                 return;
             }
-            await interaction.reply({ content: 'There was a transient error while executing the command', ephemeral: true });
+            await interaction.followUp({ content: 'There was a transient error while executing the command', ephemeral: true });
         }
     },
 };
